@@ -21,11 +21,14 @@ export type NotificationBody = {
   run_after?: string;
   product: Record<string, string>;
 };
-
 export type Message = {
   id: number;
   name: string;
   payload: string;
+  handled: boolean;
+  created_at: string;
+  run_after: string | null;
+  status: StatusTypes;
 };
 
 export type Status = {

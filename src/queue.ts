@@ -75,15 +75,6 @@ export function pushMessage(notificationBody: NotificationBody) {
   }
 }
 
-export function pushNotification(body: string) {
-  db.prepare(
-    `
-        insert into notifications (body)
-        values (?);
-        `,
-  ).run(body);
-}
-
 export function pushStatus(
   { status, notification_id, message_id }: Status,
 ) {
