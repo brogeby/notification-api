@@ -1,9 +1,12 @@
-import { Hono } from "jsr:@hono/hono"; 
+import { Hono } from "@hono/hono";
+import { cors } from "hono/cors";
 
 const app = new Hono();
 
-app.get("/", c => c.text("Hello world"));
+app.use("*", cors());
 
-export function run () {
+app.get("/", (c) => c.text("Hello world"));
+
+export function run() {
   Deno.serve(app.fetch);
-};
+}
