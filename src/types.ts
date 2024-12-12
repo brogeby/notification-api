@@ -3,10 +3,10 @@ export type Provider = "teams" | "email" | "slack";
 export type Contact = {
   first_name: string;
   last_name: string;
-  email: string;
-  phone: string;
-  teams_url: string;
-  slack_url: string;
+  email?: string;
+  phone?: string;
+  teams_url?: string;
+  slack_url?: string;
 };
 
 export type Content = {
@@ -15,16 +15,17 @@ export type Content = {
 };
 
 export type NotificationBody = {
-  providers: Provider;
+  providers: Provider[];
   contact: Contact;
   content: Content;
-  delivery_at: string;
+  run_after?: string;
   product: Record<string, string>;
 };
 
 export type Message = {
   id: number;
   name: string;
+  payload: string;
 };
 
 export type Status = {

@@ -1,5 +1,5 @@
 import { Provider } from "./index.ts";
-import { NotificationBody, Status, StatusTypes } from "../types.ts";
+import { NotificationBody, StatusTypes } from "../types.ts";
 import ProviderError from "./error.ts";
 
 class Email implements Provider {
@@ -16,17 +16,17 @@ class Email implements Provider {
       "Content-type": "application/json",
       "Authorization": "Bearer " + this.apiKey,
     };
-
+    console.log("goods being sent", notification.content);
     const body = {
       from: {
         email: "info@grade.com",
         name: "Grade AB",
       },
-      to: {
+      to: [{
         email: notification.contact.email,
         name:
           `${notification.contact.first_name} ${notification.contact.last_name}`,
-      },
+      }],
       subject: notification.content.subject,
       text: notification.content.body,
     };
@@ -36,12 +36,11 @@ class Email implements Provider {
       headers: headers,
       body: JSON.stringify(body),
     });
-
+    console.log("email goods", response);
     if (!response.ok) {
-      console.error(await response.json());
+      console.error(await response.text());
       throw new ProviderError("Failed to send email");
     }
-
     return "success";
   }
 }

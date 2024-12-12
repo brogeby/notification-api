@@ -1,8 +1,8 @@
 import { db } from "./db.ts";
-import * as providers from "./providers/index.ts";
 import ProviderError from "./providers/error.ts";
 import { Message, NotificationBody, Status } from "./types.ts";
 import email from "./providers/email.ts";
+import teams from "./providers/teams.ts";
 
 export function start() {
   console.log("queue started");
@@ -10,10 +10,10 @@ export function start() {
     const messages = db
       .prepare(
         `
-            select *
-            from messages
-            where handled = false;
-            `,
+        select *
+        from messages
+        where handled = false;
+        `,
       )
       .all<Message>();
 
@@ -21,7 +21,27 @@ export function start() {
       try {
         switch (message.name) {
           case "email":
-            email.send(message);
+            email.send(JSON.parse(message.payload));
+
+            db.prepare(
+              `
+              update messages
+              set handled = 1, status = 'success'
+              where id = ?
+            `,
+            ).run(message.id);
+            break;
+
+          case "teams":
+            teams.send(JSON.parse(message.payload));
+
+            db.prepare(
+              `
+              update messages
+              set handled = 1, status = 'success'
+              where id = ?
+            `,
+            ).run(message.id);
             break;
 
           default:
@@ -29,7 +49,7 @@ export function start() {
         }
       } catch (err) {
         if (err instanceof ProviderError) {
-          pushMessage(message.name);
+          // pushMessage(message);
         }
 
         db.prepare(
@@ -44,13 +64,16 @@ export function start() {
   }, 2000);
 }
 
-export function pushMessage(message: Message) {
-  db.prepare(
-    `
-        insert into messages (name)
-        values (?);
-        `,
-  ).run(message.name);
+export function pushMessage(notificationBody: NotificationBody) {
+  console.log("WE not here??????", notificationBody);
+  for (const provider of notificationBody.providers) {
+    db.prepare(
+      `
+      insert into messages (name, payload)
+      values (?, ?);
+      `,
+    ).run(provider, JSON.stringify(notificationBody));
+  }
 }
 
 export function pushNotification(body: string) {
