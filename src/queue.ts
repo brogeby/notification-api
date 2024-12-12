@@ -38,7 +38,7 @@ export function start() {
         db.prepare(
           `
                     update messages
-                    set status = "failed"
+                    set status = 'failed'
                     where id = ?
                     `
         ).run(message.id);
