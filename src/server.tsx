@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { cors } from "hono/cors";
 import { db } from "./db.ts";
 import * as queue from "./queue.ts";
@@ -8,14 +8,14 @@ const app = new Hono();
 
 app.use("*", cors());
 
-app.post("/send-notification", async (c) => {
+app.post("/send-notification", async (c: Context) => {
   const body = await c.req.json<NotificationBody>();
   queue.pushMessage(body);
 
   return c.text("OK", 200);
 });
 
-app.get("/messages", (c) => {
+app.get("/messages", (c: Context) => {
   const colorMap: Record<StatusTypes, string> = {
     success: "green",
     failed: "red",
@@ -44,7 +44,7 @@ app.get("/messages", (c) => {
   );
 });
 
-app.get("/messages/:messageId", (c) => {
+app.get("/messages/:messageId", (c: Context) => {
   const messageId = c.req.param("messageId");
 
   const messages = db.prepare(
@@ -60,7 +60,7 @@ app.get("/messages/:messageId", (c) => {
   return c.json(messages[0]);
 });
 
-app.post("/webhook/:provider", (c) => {
+app.post("/webhook/:provider", (c: Context) => {
   return c.json({ message: "ok", provider: c.req.param("provider") });
 });
 

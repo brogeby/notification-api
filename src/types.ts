@@ -1,40 +1,18 @@
-export type Provider = "teams" | "email" | "slack";
+import { z } from "npm:zod";
+import {
+  ContactSchema,
+  ContentSchema,
+  MessageSchema,
+  NotificationBodySchema,
+  ProviderSchema,
+  StatusSchema,
+  StatusTypesSchema,
+} from "./schemas.ts";
 
-export type Contact = {
-  first_name: string;
-  last_name: string;
-  email?: string;
-  phone?: string;
-  teams_url?: string;
-  slack_url?: string;
-};
-
-export type Content = {
-  subject: string;
-  body: string;
-};
-
-export type NotificationBody = {
-  providers: Provider[];
-  contact: Contact;
-  content: Content;
-  run_after?: string;
-  product: Record<string, string>;
-};
-export type Message = {
-  id: number;
-  name: string;
-  payload: string;
-  handled: boolean;
-  created_at: string;
-  run_after: string | null;
-  status: StatusTypes;
-};
-
-export type Status = {
-  status: StatusTypes;
-  message_id: number;
-  notification_id: number;
-};
-
-export type StatusTypes = "success" | "failed" | "pending";
+export type Provider = z.infer<typeof ProviderSchema>;
+export type Contact = z.infer<typeof ContactSchema>;
+export type Content = z.infer<typeof ContentSchema>;
+export type NotificationBody = z.infer<typeof NotificationBodySchema>;
+export type Message = z.infer<typeof MessageSchema>;
+export type Status = z.infer<typeof StatusSchema>;
+export type StatusTypes = z.infer<typeof StatusTypesSchema>;

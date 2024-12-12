@@ -3,13 +3,11 @@ import { NotificationBody, StatusTypes } from "../types.ts";
 import ProviderError from "./error.ts";
 
 class Teams implements Provider {
-  url: string;
-
-  constructor(url: string) {
-    this.url = url;
-  }
-
   async send(notification: NotificationBody): Promise<StatusTypes> {
+    if (!notification.contact.teams_url) {
+      throw new ProviderError("Teams URL is required");
+    }
+
     const headers = {
       "Content-Type": "application/json",
     };
@@ -30,7 +28,7 @@ class Teams implements Provider {
       ],
     };
 
-    const response = await fetch(this.url, {
+    const response = await fetch(notification.contact.teams_url, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(body),
@@ -45,10 +43,4 @@ class Teams implements Provider {
   }
 }
 
-const teamsWebhookUrl = Deno.env.get("TEAMS_WEBHOOK_URL");
-
-if (!teamsWebhookUrl) {
-  throw new Error("Missing Microsoft Teams provider config");
-}
-
-export default new Teams(teamsWebhookUrl);
+export default new Teams();
