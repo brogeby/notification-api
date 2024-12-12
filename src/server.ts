@@ -25,6 +25,10 @@ app.get("/status/:id", (c) => {
   return c.json(messages);
 });
 
+app.post("/webhook/:provider", (c) => {
+  return c.json({ message: 'ok', provider: c.req.param('provider') });
+});
+
 export function run() {
   Deno.serve(app.fetch);
 }
