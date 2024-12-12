@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "start": "deno run --allow-net src/main.ts",
-    "watch": "deno run --allow-net --watch src/main.ts"
+    "start": "deno run  --allow-read --allow-write --allow-env --allow-net --allow-ffi src/main.ts",
+    "watch": "deno run --allow-read --allow-write --allow-env --allow-net --allow-ffi --watch src/main.ts"
   },
   "imports": {
     "hono": "jsr:@hono/hono"
