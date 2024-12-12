@@ -16,7 +16,6 @@ class Email implements Provider {
       "Content-type": "application/json",
       "Authorization": "Bearer " + this.apiKey,
     };
-    console.log("goods being sent", notification.content);
     const body = {
       from: {
         email: "info@grade.com",
@@ -36,7 +35,6 @@ class Email implements Provider {
       headers: headers,
       body: JSON.stringify(body),
     });
-    console.log("email goods", response);
     if (!response.ok) {
       console.error(await response.text());
       throw new ProviderError("Failed to send email");

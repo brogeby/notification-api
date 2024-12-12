@@ -65,7 +65,6 @@ export function start() {
 }
 
 export function pushMessage(notificationBody: NotificationBody) {
-  console.log("WE not here??????", notificationBody);
   for (const provider of notificationBody.providers) {
     db.prepare(
       `
