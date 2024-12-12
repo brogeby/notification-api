@@ -1,7 +1,7 @@
 type Message = {
-    name: string
-}
+  name: string;
+};
 
-export default function (message: Message) {
-    console.log(message);
+export function email(message: Message) {
+  console.log(message);
 }

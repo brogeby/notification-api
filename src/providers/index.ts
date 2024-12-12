@@ -1,3 +1,1 @@
-export * as email from './email.ts';
-
-export class ProviderError extends Error {}
+export { email } from "./email.ts";
