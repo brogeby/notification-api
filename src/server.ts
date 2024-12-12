@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { cors } from "hono/cors";
 import { db } from "./db.ts";
 import * as queue from "./queue.ts";
@@ -7,8 +7,11 @@ const app = new Hono();
 
 app.use("*", cors());
 
-app.post("/send-notification", (c) => {
-  queue.push("waddup");
+app.post("/send-notification", async (c) => {
+  const body = await c.req.json();
+  console.log("Mr guy", await c.req.json());
+  queue.pushNotification(body);
+  queue.pushMessage(body);
   return c.text("OK", 200);
 });
 

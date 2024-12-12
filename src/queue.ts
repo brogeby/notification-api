@@ -1,11 +1,8 @@
 import { db } from "./db.ts";
 import * as providers from "./providers/index.ts";
 import ProviderError from "./providers/error.ts";
-
-type Message = {
-  id: number;
-  name: string;
-};
+import { Message, NotificationBody, Status } from "./types.ts";
+import email from "./providers/email.ts";
 
 export function start() {
   console.log("queue started");
@@ -16,7 +13,7 @@ export function start() {
             select *
             from messages
             where handled = false;
-            `
+            `,
       )
       .all<Message>();
 
@@ -24,7 +21,7 @@ export function start() {
       try {
         switch (message.name) {
           case "email":
-            providers.email(message);
+            email.send(message);
             break;
 
           default:
@@ -32,34 +29,46 @@ export function start() {
         }
       } catch (err) {
         if (err instanceof ProviderError) {
-          push(message.name);
+          pushMessage(message.name);
         }
 
         db.prepare(
           `
-                    update messages
-                    set status = 'failed'
-                    where id = ?
-                    `
+            update messages
+            set status = 'failed'
+            where id = ?
+          `,
         ).run(message.id);
       }
-
-      // db.prepare(
-      //     `
-      //     update messages
-      //     set status = "success"
-      //     where
-      //     `
-      // )
     }
   }, 2000);
 }
 
-export function push(name: string) {
+export function pushMessage(message: Message) {
   db.prepare(
     `
         insert into messages (name)
         values (?);
-        `
-  ).run(name);
+        `,
+  ).run(message.name);
+}
+
+export function pushNotification(body: string) {
+  db.prepare(
+    `
+        insert into notifications (body)
+        values (?);
+        `,
+  ).run(body);
+}
+
+export function pushStatus(
+  { status, notification_id, message_id }: Status,
+) {
+  db.prepare(
+    `
+    INSERT INTO statuses (status, notification_id, message_id)
+    VALUES (?, ?, ?);
+    `,
+  ).run(status, notification_id, message_id);
 }
