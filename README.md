@@ -1,4 +1,6 @@
 # notification-api
 
-josef was here
-access???
+Run the application:
+`deno task start`
+or run it and watch for changes
+`deno task watch`
