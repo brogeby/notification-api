@@ -1,5 +1,5 @@
 import { Provider } from "./index.ts";
-import { NotificationBody, Status, StatusTypes } from "../types.ts";
+import { NotificationBody, StatusTypes } from "../types.ts";
 import ProviderError from "./error.ts";
 
 class SMS implements Provider {
@@ -41,7 +41,7 @@ const smsApiKey = Deno.env.get("SMS_API_KEY");
 const smsUrl = Deno.env.get("SMS_URL");
 
 if (!smsApiKey || !smsUrl) {
-  throw new Error("Missing Email provider config");
+  throw new Error("Missing SMS provider config");
 }
 
 export default new SMS(smsUrl, smsApiKey);

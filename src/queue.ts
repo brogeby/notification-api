@@ -1,8 +1,7 @@
 import { db } from "./db.ts";
 import ProviderError from "./providers/error.ts";
 import { Message, NotificationBody, Status } from "./types.ts";
-import email from "./providers/email.ts";
-import teams from "./providers/teams.ts";
+import providers from "./providers/index.ts";
 
 export function start() {
   console.log("queue started");
@@ -19,34 +18,16 @@ export function start() {
 
     for (const message of messages) {
       try {
-        switch (message.name) {
-          case "email":
-            email.send(JSON.parse(message.payload));
+        const notification = JSON.parse(message.payload);
+        providers[message.name].send(notification);
 
-            db.prepare(
-              `
+        db.prepare(
+          `
               update messages
               set handled = 1, status = 'success'
               where id = ?
             `,
-            ).run(message.id);
-            break;
-
-          case "teams":
-            teams.send(JSON.parse(message.payload));
-
-            db.prepare(
-              `
-              update messages
-              set handled = 1, status = 'success'
-              where id = ?
-            `,
-            ).run(message.id);
-            break;
-
-          default:
-            throw new Error("Could not find a matching provider");
-        }
+        ).run(message.id);
       } catch (err) {
         if (err instanceof ProviderError) {
           // pushMessage(message);

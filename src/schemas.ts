@@ -68,7 +68,7 @@ export const StatusTypesSchema = z.enum(["success", "failed", "pending"]);
 
 export const MessageSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  name: ProviderSchema,
   payload: z.string(),
   handled: z.boolean(),
   created_at: z.date(),
