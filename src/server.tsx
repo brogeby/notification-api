@@ -6,6 +6,7 @@ import { db } from "./db.ts";
 import * as queue from "./queue.ts";
 import { Message, NotificationBody, StatusTypes } from "./types.ts";
 import { NotificationBodySchema } from "./schemas.ts";
+import DemoPage from "./demo.tsx";
 
 const app = new Hono();
 
@@ -16,6 +17,10 @@ app.onError((err, c) => {
 });
 
 app.use("*", cors());
+
+app.get("/", (c) => {
+  return c.html(<DemoPage />);
+});
 
 app.post(
   "/send-notification",
@@ -48,7 +53,9 @@ app.get("/messages", (c: Context) => {
                 {message.status}
               </span>
               <br />
-              <pre style="background-color: lightgray; padding: 1rem; display: inline-block; border-radius: 10px;">{JSON.stringify(JSON.parse(message.payload), null, 2)}</pre>
+              <pre style="background-color: lightgray; padding: 1rem; display: inline-block; border-radius: 10px;">
+                {JSON.stringify(JSON.parse(message.payload), null, 2)}
+              </pre>
             </li>
           );
         })}
@@ -60,11 +67,9 @@ app.get("/messages", (c: Context) => {
 app.get("/messages/:messageId", (c: Context) => {
   const messageId = c.req.param("messageId");
 
-  const messages = db.prepare(
-    `
-    select * from messages where id = ?
-    `,
-  ).all<Message>(messageId);
+  const messages = db.prepare(`select * from messages where id = ?`).all<
+    Message
+  >(messageId);
 
   if (!messages.length) {
     return c.text("Message not found", 404);
