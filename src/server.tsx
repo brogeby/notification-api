@@ -1,19 +1,26 @@
 import { Context, Hono } from "hono";
 import { cors } from "hono/cors";
+import { zValidator } from "npm:@hono/zod-validator";
+
 import { db } from "./db.ts";
 import * as queue from "./queue.ts";
 import { Message, NotificationBody, StatusTypes } from "./types.ts";
+import { NotificationBodySchema } from "./schemas.ts";
 
 const app = new Hono();
 
 app.use("*", cors());
 
-app.post("/send-notification", async (c: Context) => {
-  const body = await c.req.json<NotificationBody>();
-  queue.pushMessage(body);
+app.post(
+  "/send-notification",
+  zValidator("json", NotificationBodySchema),
+  async (c: Context) => {
+    const body = await c.req.json<NotificationBody>();
+    queue.pushMessage(body);
 
-  return c.text("OK", 200);
-});
+    return c.text("OK", 200);
+  },
+);
 
 app.get("/messages", (c: Context) => {
   const colorMap: Record<StatusTypes, string> = {

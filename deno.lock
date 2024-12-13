@@ -11,6 +11,7 @@
     "jsr:@std/fs@0.221": "0.221.0",
     "jsr:@std/path@0.217": "0.217.0",
     "jsr:@std/path@0.221": "0.221.0",
+    "npm:@hono/zod-validator@*": "0.4.1_hono@4.6.13_zod@3.24.1",
     "npm:zod@*": "3.24.1"
   },
   "jsr": {
@@ -66,6 +67,16 @@
     }
   },
   "npm": {
+    "@hono/zod-validator@0.4.1_hono@4.6.13_zod@3.24.1": {
+      "integrity": "sha512-I8LyfeJfvVmC5hPjZ2Iij7RjexlgSBT7QJudZ4JvNPLxn0JQ3sqclz2zydlwISAnw21D2n4LQ0nfZdoiv9fQQA==",
+      "dependencies": [
+        "hono",
+        "zod"
+      ]
+    },
+    "hono@4.6.13": {
+      "integrity": "sha512-haV0gaMdSjy9URCRN9hxBPlqHa7fMm/T72kAImIxvw4eQLbNz1rgjN4hHElLJSieDiNuiIAXC//cC6YGz2KCbg=="
+    },
     "zod@3.24.1": {
       "integrity": "sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A=="
     }
