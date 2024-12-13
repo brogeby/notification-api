@@ -9,6 +9,12 @@ import { NotificationBodySchema } from "./schemas.ts";
 
 const app = new Hono();
 
+app.onError((err, c) => {
+  console.log(err);
+
+  return c.text("Error", 500);
+});
+
 app.use("*", cors());
 
 app.post(
